@@ -1,9 +1,10 @@
 program untitled;
-
+{$codepage UTF8}//Permite usar acentos y ñ en consola.
 uses crt;
 var
+Valnombre: boolean;
 opcion,tipocedula,tipoboleto,opcion2:char;
-boletos,respuesta,edad,claseboleto,servicioadicional,costo,n, s, opcion3, edad2,x:integer;
+boletos,respuesta,edad,claseboleto,servicioadicional,costo,n, s, opcion3, edad2,x, i:integer;
 Tempboletos, TempClaseB, ClaseB, TempClaseM, ClaseM, TempClaseA, ClaseA, TempServicios:longint;
 servicios, TempN, TipoN, TempI, TipoI, CostN, CostI:longint;
 PC, CP, PoC, CPo, MC, CM, VC, CV, BC, CB, FC, CF, BoC, CBo, CuC, CCu, SdC, CSd, RC, CR:longint;
@@ -11,6 +12,7 @@ TempPC, TempCP, TempPoC, TempCPo, TempMC, TempCM, TempVC, TempCV, TempBC, TempCB
 nombre, ruta:string;
 cedula:longint;
 CostDescN,DescN,CostDescI,DescI,TempCostN,TempCostI,TempCostT,CostT, vuelto, Deposito:real;
+
 
 BEGIN
 	s:=0;
@@ -114,10 +116,34 @@ BEGIN
 			begin
 			x:=0;
 			x:=x+1;
+			repeat
+			Begin
 				//El ingreso del nombre
 				Writeln('Ingrese nombre de el/la pasajero/a');
 				readln(nombre);
 				clrscr;
+				valNombre:=true;
+                   if ((nombre='') or (not(nombre[1] in ['A'..'Z']))) then //Si la entrada es vacia o la primera letra no es mayuscula, no lo acepta.
+                   begin
+                       valNombre:=false;
+                       writeln('Datos del nombre no validos, debes comenzar en mayuscula y evitar los numeros');
+                       delay(2000);
+                   end
+                   else begin
+                       for i:=2 to length(nombre) do
+                       begin
+                           if not (nombre[i] in ['a'..'z']) then //Si la entrada tiene numeros, caracteres especiales o una mayuscula en el medio, no lo acepta.
+                           begin
+                               valNombre:=false;
+                               writeln('Datos del nombre no validos, debes comenzar en mayuscula y evitar los numeros');
+                               delay(2000);
+                               break; //Si consigue uno, no hace falta revisar el resto.
+                           end;
+                       end;
+                   end;
+				End;
+				clrscr;
+			  until valNombre;
 				//El ingreso de la edad
 				writeln('Mucho gusto ',nombre,' Ingrese su edad');
 				readln(edad2);
@@ -145,6 +171,7 @@ BEGIN
 						clrscr;
 						repeat
 						Begin
+							clrscr;
 							//Escogiendo la clase del vuelo
 							writeln('Escoja en que sitio del avion quiere ir');
 							writeln('1. Primera clase');
@@ -156,36 +183,34 @@ BEGIN
 								begin
 									writeln('Escogiste el boleto de primera clase');
 									readkey;
-									clrscr;
 									ClaseA:=ClaseA+1;
 								end
 							else if claseboleto=2 then
 								begin
 									writeln('Escogiste el boleto de segunda clase');
 									readkey;
-									clrscr;
 									ClaseM:=ClaseM+1;
 								end
 							else if claseboleto=3 then
 								begin
 									writeln('Escogiste el boleto de tercera clase');
 									readkey;
-									clrscr;
 									ClaseB:=ClaseB+1;
 								end
+							
+							else
+								clrscr;	
 							//mensaje sobre si el pasajero tiene mas de 60 años no deje comprar 3ra clase	
-							else if (edad2>60) and (claseboleto<>3) then
+							if (edad2>60) and (claseboleto<>3) then
 								Begin								
 									writeln('Los mayores de 60 años no pueden ir en tercera clase');
 									readkey;
-									clrscr;
 								End
-							else
-								clrscr;	
 						End;
 						until (claseboleto>0) and (claseboleto<4) or (edad2>60) and (claseboleto<>3);
 						
 						repeat
+							clrscr;
 							//Escogiendo el tipo de vuelo, N o I
 							Writeln('Escoja su tipo de vuelo, nacional o internacional');
 							writeln('"N" para nacional mientras que "I" para internacional');
@@ -396,9 +421,11 @@ BEGIN
 								'5':begin
 										If (ruta='ida') then
 											Begin
+												//vuelo ida barcelona-caracas
 												writeln('Escogiste el vuelo Barcelona-Caracas');
 												costo:=30;
 												BC:= BC+1;
+												//descuento mayores de edad
 												if (60<edad2) then
 													begin
 														CostDescN:=costo*0.1;
@@ -416,6 +443,7 @@ BEGIN
 											End
 										else
 											Begin
+												//vuelo venida barcelona-caracas
 												writeln('Escogiste el vuelo Caracas-Barcelona');
 												costo:=30;
 												CB:= CB+1;
@@ -438,6 +466,7 @@ BEGIN
 								'6':begin
 										If (ruta='ida') then
 											Begin
+												//vuelo ida la fria-caracas
 												writeln('Escogiste el vuelo La fria-Caracas');
 												costo:=60;
 												FC:= FC+1;
@@ -458,6 +487,7 @@ BEGIN
 											End
 										else
 											Begin
+												//vuelo venida caracas-la fria
 												writeln('Escogiste el vuelo Caracas-La fria');
 												costo:=60;
 												CF:= CF+1;
@@ -481,6 +511,7 @@ BEGIN
 						End
 					else if (tipoboleto='I') or (tipoboleto='i') then
 						Begin
+							//Seleccion de ruta internacional
 							writeln('Escoga su ruta de vuelo');
 							writeln('1.Bogota-Caracas');
 							writeln('2.Curazao Ordaz-Caracas');
@@ -682,6 +713,7 @@ BEGIN
 									end;
 							End;
 						end;
+				//seleccion servicios adicionales
 				writeln('Necesita un servicio adicional?');
 				writeln('1. Si');
 				writeln('2. No');
@@ -716,7 +748,34 @@ BEGIN
 			End;
 			until (edad2>18) or (x=1);
 		for n:=2 to boletos do
-			Begin				
+			Begin
+			repeat
+			Begin
+				//El ingreso del nombre
+				Writeln('Ingrese nombre de el/la pasajero/a');
+				readln(nombre);
+				clrscr;
+				valNombre:=true;
+                   if ((nombre='') or (not(nombre[1] in ['A'..'Z']))) then //Si la entrada es vacia o la primera letra no es mayuscula, no lo acepta.
+                   begin
+                       valNombre:=false;
+                       writeln('Datos del nombre no validos, debes comenzar en mayuscula y evitar los numeros');
+                       delay(2000);
+                   end
+                   else begin
+                       for i:=2 to length(nombre) do
+                       begin
+                           if not (nombre[i] in ['a'..'z']) then //Si la entrada tiene numeros, caracteres especiales o una mayuscula en el medio, no lo acepta.
+                           begin
+                               valNombre:=false;
+                               writeln('Datos del nombre no validos, debes comenzar en mayuscula y evitar los numeros');
+                               delay(2000);
+                               break; //Si consigue uno, no hace falta revisar el resto.
+                           end;
+                       end;
+                   end;
+				End;
+			  until valNombre;				
 				writeln('Ingrese nombre de el/la siguiente pasajero/a');
 				readln(nombre);
 				clrscr;
@@ -758,13 +817,14 @@ BEGIN
 							end
 						else
 							clrscr;
-						if (edad>59) and (claseboleto=3) then
+						//mensaje sobre si el pasajero tiene mas de 60 años no deje comprar 3ra clase	
+						if (edad>60) and (claseboleto=3) then
 							begin
 								writeln('Los mayores de 60 años no pueden ir en tercera clase');
 								readkey;
 								clrscr;
 							end;
-						until (claseboleto>0) and (claseboleto<4) or (edad<60) and (claseboleto=3);
+						until (claseboleto>0) and (claseboleto<4) or (edad>60) and (claseboleto<>3);
 			
 					repeat
 						Writeln('Escoja su tipo de vuelo, nacional o internacional');
@@ -1298,7 +1358,7 @@ BEGIN
 				End;
 			until (Deposito = CostT) or  (Deposito > CostT);
 			vuelto:= Deposito-CostT;
-			if vuelto=0 then
+			if vuelto>0 then
 				begin
 					writeln('Se ha hecho la transaccion correctamente, tiene un vuelto de ', vuelto:2:2,'$');
 					readkey;
