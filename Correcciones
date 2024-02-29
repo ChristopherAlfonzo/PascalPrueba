@@ -1,0 +1,9 @@
+- Una vez ingresas una edad menor a 18 años, el programa aun continúa su ejecución al costo de los boletos
+- ¿Que sucede si en vez del usuario querer viajar Porlamar-Caracas, quiere viajar Caracas Porlamar?
+- Donde dice si deseo comprar un boleto de ida o vuelta, no me permite elegir la opcion, sin embargo, si le doy enter continua su ejecución
+- ¿Que pasa con el descuento de un menor de 12 años?
+- En el apartado de Servicios, debo darle dos veces a la opcion para que la tome.
+- El programa me contabiliza 3 boletos vendidos, cuando solo he comprado dos.
+- Cuando ingreso una letra en la cedula, no esta validado que no ingrese letras.
+- Con respecto al pseudocodigo, recuerden que la palabra INICIO debe ir antes de comenzar a declarar variables, por otro lado, la variable Entero Largo, no existe en psudocodigo.
+- Las palabras reservadas en pseudocodigo deben terminar en verbo infinitivo, es decir, escribir, repetir, exceptuando el mientras, para y caso.
